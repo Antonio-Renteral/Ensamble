@@ -8,7 +8,20 @@ Desde la ruta /export/space3/users/llozano/GENOMICA/DATA/ se obtuvieron los sigu
 Los archivos se guardaron en PROYECTO_EQUIPO_4/DATA
 
 Creamos el directorio para guardar los resultados del FASTQC:
-
+```
+mkdir FASTQS
+cd FASTQS
+```
 
 Luego se realizón un FASTQC con los siguientes comandos:
+```
+fastqc ../DATA/ILLU_GRP4_* 
+fastqc ../DATA/PAC_GRP4.fastq 
+```
 
+Creamos el directorio para guardar los resultados de TRIMM (TRIMMOMATIC y TRIM_GALORE):
+```
+mkdir TRIMM
+cd TRIMM
+mkdir TRIMMOMATIC TRIM_GALORE
+```
