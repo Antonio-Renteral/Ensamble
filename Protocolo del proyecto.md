@@ -5,6 +5,7 @@ Desde la ruta /export/space3/users/llozano/GENOMICA/DATA/ se obtuvieron los sigu
   - ILLU_GRP4_1.fq
   - ILLU_GRP4_2.fq
   - PAC_GRP3.fastq
+
 Los archivos se guardaron en PROYECTO_EQUIPO_4/DATA
 
 ## Desarrollo del proyecto
