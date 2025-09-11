@@ -1,14 +1,23 @@
 # Protocolo del proyecto
 
-## Descarga de archivos
+## Obtención de archivos
 Desde la ruta /export/space3/users/llozano/GENOMICA/DATA/ se obtuvieron los siguientes archivos:
   - ILLU_GRP4_1.fq
   - ILLU_GRP4_2.fq
   - PAC_GRP3.fastq
 
-Los archivos se guardaron en PROYECTO_EQUIPO_4/DATA
+## Desarrollo del proyecto (comandos):
 
-## Desarrollo del proyecto
+Los archivos se guardaron en PROYECTO_EQUIPO_4/DATA mediante lineas simbólicas:
+```
+mkdir PROYECTO_EQUIPO_4
+cd PROYECTO_EQUIPO_4
+mkdir DATA
+cd DATA
+ln -s ../../DATA/ILLU_GRP4_1.fq
+ln -s ../../DATA/ILLU_GRP4_2.fq
+ln -s export/storage/users/addielpr/GENOMICA/TRIM/TRIMMOMATIC/TruSeq3-PE.fa
+```
 
 Creamos el directorio para guardar los resultados del FASTQC:
 ```
@@ -16,7 +25,7 @@ mkdir FASTQS
 cd FASTQS
 ```
 
-Luego se realizón un FASTQC con los siguientes comandos:
+Luego se realizó un FASTQC con los siguientes comandos:
 ```
 fastqc ../DATA/ILLU_GRP4_* 
 fastqc ../DATA/PAC_GRP4.fastq 
@@ -48,3 +57,7 @@ ln -s /export/storage/users/addielpr/GENOMICA/TRIMM/TRIMMOMATIC/TruSeq3-PE.fa
 trimmomatic PE ILLU_GRP4_1.fq ILLU_GRP4_2.fq ILLU_GRP4_1_pair.fq ILLU_GRP4_1_unpair.fq ILLU_GRP4_2_pair.fq ILLU_GRP4_2_unpair.fq
 ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINLEN:25
 ```
+
+Visualizamos y comparamos los resultados obtenidos tanto por FASTQC como por TRIM_GALORE y TRIMMOMATIC. Dandonos cuenta
+que los que mejor se veian eran los obtenidos mediante FASTQC por lo que los siguientes pasos se trabajaron con los resultados de los FASTQS
+
