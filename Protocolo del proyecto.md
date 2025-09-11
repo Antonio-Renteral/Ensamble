@@ -61,3 +61,18 @@ ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINL
 Visualizamos y comparamos los resultados obtenidos tanto por FASTQC como por TRIM_GALORE y TRIMMOMATIC. Dandonos cuenta
 que los que mejor se veian eran los obtenidos mediante FASTQC por lo que los siguientes pasos se trabajaron con los resultados de los FASTQS
 
+Creamos la carpeta ENSAMBLE y dentro de esta una llamada VELVET_OPTIMISER. Posteriormente corrimos el VelvetOptimiser con rangos diferentes
+para ver cual era el mejor valor:
+```
+mdkir ENSAMBLE
+cd ENSAMBLE
+mkdir VELVET_OPTIMISER
+cd VELVET_OPTIMISER
+ln -s ../../DATA/ILLU_GRP4_1.fq
+ln -s ../../DATA/ILLU_GRP4_2.fq
+VelvetOptimiser.pl --s 21 --e 61 --x 2 --t 16 -f '-fastq -shortPaired -separate ILLU_GRP4_1.fq ILLU_GRP4_2.fq'
+VelvetOptimiser.pl --s 31 --e 51 --x 2 --t 16 -f '-fastq -shortPaired -separate ILLU_GRP4_1.fq ILLU_GRP4_2.fq'
+VelvetOptimiser.pl --s 35 --e 47 --x 2 --t 16 -f '-fastq -shortPaired -separate ILLU_GRP4_1.fq ILLU_GRP4_2.fq'
+```
+
+De acuerdo a los resultados, el mejor valor fue el 43
