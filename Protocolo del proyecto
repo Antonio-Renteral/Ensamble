@@ -1,0 +1,14 @@
+# Protocolo del proyecto
+
+## Descarga de archivos
+Desde la ruta /export/space3/users/llozano/GENOMICA/DATA/ se obtuvieron los siguientes archivos:
+  - ILLU_GRP4_1.fq
+  - ILLU_GRP4_2.fq
+  - PAC_GRP3.fastq
+Los archivos se guardaron en PROYECTO_EQUIPO_4/DATA
+
+Creamos el directorio para guardar los resultados del FASTQC:
+
+
+Luego se realizón un FASTQC con los siguientes comandos:
+
