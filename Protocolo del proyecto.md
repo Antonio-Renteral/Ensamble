@@ -130,7 +130,7 @@ Luego de esto, procedemos a correr unicycler con los siguientes comandos:
 unicycler -t 10 --linear_seqs 1 -l PAC_GRP4.fastq -o UNI_LONG_V1
 ```
 
-Ya una vez que tenemos los ensambles mediante tres programas distintos, procedemos a correr un quast para evaluar cual es el mejor/
+Ya una vez que tenemos los ensambles mediante tres programas distintos, procedemos a correr un quast para evaluar cual es el mejor
 ```
 conda activate quast 
 quast -m 200 VELVETH/VELVET_43/contigs.fa SPADES/SPADES_V1/contigs.fasta SPADES/SPADES_V2/contigs.fasta SPADES/SPADES_V3/contigs.fasta UNICYCLER/UNI_LONG_V1/assembly.fasta 
