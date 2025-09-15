@@ -55,7 +55,7 @@ ln -s ../../data/ILLU_GRP4_1.fq
 ln -s ../../data/ILLU_GRP4_2.fq
 ln -s /export/storage/users/addielpr/GENOMICA/TRIMM/TRIMMOMATIC/TruSeq3-PE.fa
 trimmomatic PE ILLU_GRP4_1.fq ILLU_GRP4_2.fq ILLU_GRP4_1_pair.fq ILLU_GRP4_1_unpair.fq ILLU_GRP4_2_pair.fq ILLU_GRP4_2_unpair.fq
-ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINLEN:25
+ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:20 MINLEN:25
 ```
 
 Visualizamos y comparamos los resultados obtenidos tanto por FASTQC como por TRIM_GALORE y TRIMMOMATIC. Dandonos cuenta
@@ -76,3 +76,62 @@ VelvetOptimiser.pl --s 35 --e 47 --x 2 --t 16 -f '-fastq -shortPaired -separate 
 ```
 
 De acuerdo a los resultados, el mejor valor fue el 43
+
+Proseguimos creando una carpeta para ejecutar velveth y otra para ejecutar velvetg. Mismas que están dentro de la carpeta ENSAMBLE. 
+
+```
+mkdir VELVETH
+mkdir VELVETG   
+```
+
+Velveth y Velvetg se corrieron con los siguientes comandos:
+```
+cd VELVETH
+ln -s ../../DATA/ILLU_GRP4_1.fq
+ln -s ../../DATA/ILLU_GRP4_2.fq
+velveth VELVET_43 43 -fastq  -shortPaired -separate ILLU_GRP4_1.fq ILLU_GRP4_2.fq
+cd ../VELVETG
+ln -s ../../DATA/ILLU_GRP4_1.fq
+ln -s ../../DATA/ILLU_GRP4_2.fq
+ln -s ../VELVETH/VELVET_43/ 
+velvetg VELVET_43 -cov_cutoff auto -exp_cov auto -ins_length 300 -scaffolding no
+```
+Output: 
+Final graph has 817 nodes and n50 of 16580, max 90662, total 5503767, using 906308/999998 reads
+
+Output:
+Final graph has 814 nodes and n50 of 15627, max 90352, total 5502284, using 906201/999998 reads
+
+Posteriormente, creamos una carpeta para correr spades dentro de la carpeta de ENSAMBLE y activamos el entorno. 
+```
+mkdir SPADES
+cd SPADES
+conda activate spades
+ln -s ../../DATA/ILLU_GRP4_1.fq
+ln -s ../../DATA/ILLU_GRP4_2.fq
+```
+
+Spades se corrió con los siguientes comandos:
+```
+spades.py --careful -t 10 -1 ILLU_GRP4_1.fq -2 ILLU_GRP4_2.fq -k 21,33,55,77 -o SPADES_V1
+spades.py --careful -t 10 -1 ILLU_GRP4_1.fq -2 ILLU_GRP4_2.fq -k 51,61,63,69,71 -o SPADES_V2
+spades.py --careful -t 10 -1 ILLU_GRP4_1.fq -2 ILLU_GRP4_2.fq -k 17,23,31,41,53,67,79 -o SPADES_V3
+```
+
+Posterior al ensamblado con Spades, decidimos correr Unicycler con el archivo de PacBio, para esto se creo una carpeta dentro de ENSAMBLE:
+```
+mkdir UNICYCLER
+conda activate unicycler
+ln -s ../../DATA/PAC_GRP4.fastq 
+```
+
+Luego de esto, procedemos a correr unicycler con los siguientes comandos:
+```
+unicycler -t 10 --linear_seqs 1 -l PAC_GRP4.fastq -o UNI_LONG_V1
+```
+
+Ya una vez que tenemos los ensambles mediante tres programas distintos, procedemos a correr un quast para evaluar cual es el mejor/
+```
+conda activate quast 
+quast -m 200 VELVETH/VELVET_43/contigs.fa SPADES/SPADES_V1/contigs.fasta SPADES/SPADES_V2/contigs.fasta SPADES/SPADES_V3/contigs.fasta UNICYCLER/UNI_LONG_V1/assembly.fasta 
+```
