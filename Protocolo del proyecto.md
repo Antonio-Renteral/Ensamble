@@ -133,5 +133,58 @@ unicycler -t 10 --linear_seqs 1 -l PAC_GRP4.fastq -o UNI_LONG_V1
 Ya una vez que tenemos los ensambles mediante tres programas distintos, procedemos a correr un quast para evaluar cual es el mejor
 ```
 conda activate quast 
-quast -m 200 VELVETH/VELVET_43/contigs.fa SPADES/SPADES_V1/contigs.fasta SPADES/SPADES_V2/contigs.fasta SPADES/SPADES_V3/contigs.fasta UNICYCLER/UNI_LONG_V1/assembly.fasta 
+quast -m 200 VELVETH/VELVET_43/contigs.fa SPADES/SPADES_V1/contigs.fasta SPADES/SPADES_V2/contigs.fasta SPADES/SPADES_V3/contigs.fasta UNICYCLER/UNI_LONG_V1/assembly.fasta
+```
+
+Hasta el momento, de acuerdo a los resultados del quast, el mejor programa ha sido Unicycler en la version LONG, esto debido a que reduce drásticamente el número de contigs (10 frente a más de 100 en otros ensambladores), incrementa de manera significativa el valor de N50 (1.79 Mb) y genera los contigs más largos (2.1 Mb), manteniendo al mismo tiempo una longitud total coherente con el tamaño esperado del genoma (~5.7 Mb) y un contenido GC consistente (~67%).
+
+De igual forma, procederemos a correr Unicycler pero en la version SHORT y HYBRID. 
+```
+cd UNICYCLER
+ln -s ../../DATA/ILLU_GRP4_1.fq 
+ln -s ../../DATA/ILLU_GRP4_2.fq
+conda activate unicycler
+unicycler -1 ILLU_GRP4_1.fq -2 ILLU_GRP4_2.fq -t 6 -o UNI_SHORT_V1
+unicycler -t 10  --linear_seqs 1 -1 ILLU_GRP4_1.fq -2 ILLU_GRP4_2.fq -l PAC_GRP4.fastq   -o UNI_HYBRID_V1
+```
+
+Posterior a esto, correremos el programa Canu y Flye para poder comparar de nuevo nuestros resultados, los corrimos con los siguientes comandos:
+
+```
+cd ../
+mkdir CANU
+cd CANU
+conda activate canu
+ln -s ../../DATA/PAC_GRP4.fastq  
+canu -d CANU_V1 -p GRP4 genomeSize=5.7m -pacbio PAC_GRP4.fastq
+mkdir FLYE
+cd FLYE
+ln -s ../../DATA/PAC_GRP4.fastq 
+conda deactivate
+flye -g 5.7m -t 15 --pacbio-corr PAC_GRP4.fastq -o FLYE_V1
+```
+Luego de que estos dos programas terminen, pasamos a correr otro quast dentro de la carpeta ENSAMBLE para poder comparar el que nos salió mejor la vez pasada, con los programas más recientes.
+
+```
+conda activate quast
+quast -m 200 UNICYCLER/UNI_LONG_V1/assembly.fasta UNICYCLER/UNI_SHORT_V1/assembly.fasta UNICYCLER/UNI_HYBRID_V1/assembly.fasta CANU/CANU_V1/GRP4.contigs.fasta FLYE/FLYE_V1/assembly.fasta
+```
+
+Posteriormente, correremos el programa mummer con los siguientes comandos, los resultados irán dentro de una carpeta llamada MUMMER que se encuentra dentro de ENSAMBLE::
+
+```
+mkdir MUMMER
+cd MUMMER
+mkdir MUMMER_CANU_FLYE
+mkdir MUMMER_UNIHYB_CANU
+cd MUMMER_CANU_FLYE/
+ln -s ../../CANU/CANU_V1/GRP4.contigs.fasta
+ln -s ../../FLYE/FLYE_V1/assembly.fasta
+nucmer --coords GRP4.contigs.fasta assembly.fasta
+mummerplot out.delta
+cd ../MUMMER_UNIHYB_CANU/
+ln -s ../../UNICYCLER/UNI_HYBRID_V1/assembly.fasta
+ln -s ../../CANU/CANU_V1/GRP4.contigs.fasta
+nucmer --coords assembly.fasta GRP4.contigs.fasta
+mummerplot out.delta
 ```
